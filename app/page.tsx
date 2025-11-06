@@ -80,7 +80,7 @@ export default function Page() {
 
   return (
     <Card className="w-full sm:max-w-md my-10 mx-auto">
-      <CardHeader>
+      <CardHeader className="border-b">
         <CardTitle>Resume Builder</CardTitle>
         <CardDescription>Enter your details to create a resume.</CardDescription>
       </CardHeader>
@@ -255,9 +255,7 @@ export default function Page() {
           {activeStep < steps.length - 1 && (
             <Button
               type="button"
-              onClick={async () => {
-                setActiveStep(i => i + 1);
-              }}
+              onClick={() => setActiveStep(i => i + 1)}
             >
               Next
             </Button>
