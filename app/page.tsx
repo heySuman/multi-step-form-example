@@ -256,7 +256,6 @@ export default function Page() {
             <Button
               type="button"
               onClick={async () => {
-                const valid = form.trigger()
                 setActiveStep(i => i + 1);
               }}
             >
