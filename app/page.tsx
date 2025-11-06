@@ -1,65 +1,234 @@
-import Image from "next/image";
+"use client"
+import * as z from "zod"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 
-export default function Home() {
+// Personal Schema
+const PersonalSchema = z.object({
+  name: z.string().min(1, { error: "Name is required." }),
+  phone: z.string().min(1, { error: "Contact is required." }),
+  address: z.string().min(1, { error: "Address is required." }),
+  age: z.string().min(1, { error: "Age is required." }),
+})
+
+// Education Schema
+const EducationalSchema = z.object({
+  degree: z.string().min(1, { error: "Name is required." }),
+  institute: z.string().min(1, { error: "Name is required." }),
+  startDate: z.coerce.date().optional().nullable(),
+  endDate: z.coerce.date().optional().nullable(),
+})
+
+// Combining Personal and Education Schema under single Schema for our form 
+const resumeSchema = PersonalSchema.extend(EducationalSchema.shape)
+
+export default function Page() {
+  const form = useForm(
+    {
+      resolver: zodResolver(resumeSchema),
+      defaultValues: {
+        name: "",
+        phone: "",
+        address: "",
+        age: "",
+        degree: "",
+        institute: "",
+        startDate: null,
+        endDate: null
+      }
+    }
+  )
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <Card className="w-full sm:max-w-md my-10 mx-auto">
+      <CardHeader>
+        <CardTitle>Resume Builder</CardTitle>
+        <CardDescription>Enter your details to create a resume.</CardDescription>
+      </CardHeader>
+
+      <CardContent>
+        <form>
+          <FieldGroup>
+
+            {/* Personal */}
+            <h2 className="text-md font-medium">Personal Detail</h2>
+
+            <Controller
+              name="name"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel htmlFor="name">
+                    Name
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    placeholder="e.g. John Doe"
+                  />
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+
+            <Controller
+              name="phone"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel htmlFor="phone">
+                    Phone
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    placeholder="e.g. 0123456789"
+                  />
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="address"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel htmlFor="address">
+                    Address
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    placeholder="e.g. Melbourne, Australia"
+                  />
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name="age"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel htmlFor="age">
+                    Age
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    placeholder="e.g. 8"
+                  />
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            {/* Educational */}
+            <h2 className="text-md font-medium">Educational Detail</h2>
+            <Controller
+              name="degree"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel htmlFor="degree">
+                    Degree
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    placeholder="e.g. Bachelor in Accounting"
+                  />
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="institute"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel htmlFor="institute">
+                    Institute
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    placeholder="e.g. Oxford University"
+                  />
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="startDate"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel htmlFor="startDate">
+                    Start Date
+                  </FieldLabel>
+                  <Input
+                    type="date"
+                    value={field.value ? (field.value as Date).toISOString().slice(0, 10) : ""}
+                    onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : null)}
+                  />
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="endDate"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel htmlFor="endDate">
+                    End Date
+                  </FieldLabel>
+                  <Input
+                    type="date"
+                    value={field.value ? (field.value as Date).toISOString().slice(0, 10) : ""}
+                    onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : null)}
+                  />
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+          </FieldGroup>
+
+        </form>
+      </CardContent>
+    </Card>
+  )
 }
